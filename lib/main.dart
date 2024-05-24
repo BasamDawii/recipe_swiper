@@ -1,28 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:recipe_swiper/providers/recipe_provider.dart';
-import 'package:recipe_swiper/views/home_page.dart';
+import 'package:recipe_swiper/providers/user_provider.dart';
+import 'package:recipe_swiper/services/supabase_service.dart';
+import 'package:recipe_swiper/views/login_page.dart';
 
-void main() {
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SupabaseService().initialize();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => RecipeProvider(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => RecipeProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+      ],
       child: MaterialApp(
-        title: 'Food recipe',
+        title: 'Food Recipe',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,
           primaryColor: Colors.white,
           textTheme: TextTheme(
-            headlineLarge: TextStyle(color: Colors.white),
+            titleMedium: TextStyle(color: Colors.white),
           ),
         ),
-        home: HomePage(),
+        home: LoginPage(),
       ),
     );
   }
