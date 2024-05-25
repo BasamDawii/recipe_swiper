@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
+
 class RecipeCard extends StatelessWidget {
   final String title;
   final String rating;
   final String cookTime;
   final String thumbnailUrl;
+
 
   RecipeCard({
     required this.title,
@@ -12,6 +14,7 @@ class RecipeCard extends StatelessWidget {
     required this.rating,
     required this.thumbnailUrl,
   });
+
 
   @override
   Widget build(BuildContext context) {
@@ -107,3 +110,4 @@ class RecipeCard extends StatelessWidget {
     );
   }
 }
+

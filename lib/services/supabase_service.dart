@@ -1,5 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+
 class SupabaseService {
   Future<void> initialize() async {
     await Supabase.initialize(
@@ -8,3 +9,4 @@ class SupabaseService {
     );
   }
 }
+

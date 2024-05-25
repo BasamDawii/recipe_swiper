@@ -3,10 +3,12 @@ import 'package:provider/provider.dart';
 import 'package:recipe_swiper/providers/recipe_provider.dart';
 import 'package:recipe_swiper/views/widgets/recipe_card.dart';
 
+
 class FavoritesPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final recipeProvider = Provider.of<RecipeProvider>(context);
+
 
     return Scaffold(
       appBar: AppBar(
@@ -44,3 +46,4 @@ class FavoritesPage extends StatelessWidget {
     );
   }
 }
+

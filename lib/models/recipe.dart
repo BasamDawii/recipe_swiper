@@ -6,6 +6,7 @@ class Recipe {
   final String totalTime;
   final String directionsUrl;
 
+
   Recipe({
     required this.id,
     required this.name,
@@ -14,6 +15,7 @@ class Recipe {
     required this.totalTime,
     required this.directionsUrl,
   });
+
 
   factory Recipe.fromJson(dynamic json) {
     return Recipe(
@@ -26,14 +28,17 @@ class Recipe {
     );
   }
 
+
   static List<Recipe> recipesFromSnapshot(List snapshot) {
     return snapshot.map((data) {
       return Recipe.fromJson(data);
     }).toList();
   }
 
+
   @override
   String toString() {
     return 'Recipe {id: $id, name: $name, image: $images, rating: $rating, totalTime: $totalTime, directionsUrl: $directionsUrl}';
   }
 }
+

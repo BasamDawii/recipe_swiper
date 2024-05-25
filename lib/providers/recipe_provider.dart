@@ -3,14 +3,17 @@ import 'package:recipe_swiper/models/recipe.dart';
 import 'package:recipe_swiper/services/recipe_api.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+
 class RecipeProvider with ChangeNotifier {
   List<Recipe> _recipes = [];
   List<Recipe> _favoriteRecipes = [];
   bool _isLoading = true;
   bool _isFavoriteLoading = false;
 
+
   Recipe? _currentOptionA;
   Recipe? _currentOptionB;
+
 
   List<Recipe> get recipes => _recipes;
   List<Recipe> get favoriteRecipes => _favoriteRecipes;
@@ -19,22 +22,27 @@ class RecipeProvider with ChangeNotifier {
   Recipe? get currentOptionA => _currentOptionA;
   Recipe? get currentOptionB => _currentOptionB;
 
+
   RecipeProvider() {
     getRecipes();
   }
+
 
   Future<void> getFavoriteRecipes() async {
     final userId = Supabase.instance.client.auth.currentUser?.id;
     if (userId == null) return;
 
+
     try {
       _isFavoriteLoading = true;
       notifyListeners();
+
 
       final response = await Supabase.instance.client
           .from('favorites')
           .select('recipe_id')
           .eq('user_id', userId);
+
 
       List<String> favoriteRecipeIds = response.map((item) => item['recipe_id'] as String).toList();
       _favoriteRecipes = _recipes.where((recipe) => favoriteRecipeIds.contains(recipe.id)).toList();
@@ -46,9 +54,11 @@ class RecipeProvider with ChangeNotifier {
     }
   }
 
+
   Future<void> addFavoriteRecipe(Recipe recipe) async {
     final userId = Supabase.instance.client.auth.currentUser?.id;
     if (userId == null) return;
+
 
     try {
       await Supabase.instance.client
@@ -58,6 +68,7 @@ class RecipeProvider with ChangeNotifier {
         'recipe_id': recipe.id,
       });
 
+
       _favoriteRecipes.add(recipe);
       notifyListeners();
     } catch (e) {
@@ -65,9 +76,11 @@ class RecipeProvider with ChangeNotifier {
     }
   }
 
+
   Future<void> removeFavoriteRecipe(Recipe recipe) async {
     final userId = Supabase.instance.client.auth.currentUser?.id;
     if (userId == null) return;
+
 
     try {
       await Supabase.instance.client
@@ -76,6 +89,7 @@ class RecipeProvider with ChangeNotifier {
           .eq('user_id', userId)
           .eq('recipe_id', recipe.id);
 
+
       _favoriteRecipes.remove(recipe);
       notifyListeners();
     } catch (e) {
@@ -83,14 +97,17 @@ class RecipeProvider with ChangeNotifier {
     }
   }
 
+
   Future<void> getRecipes() async {
     try {
       _isLoading = true;
       notifyListeners();
 
+
       _recipes = await RecipeApi.getRecipe();
       _isLoading = false;
       _setNextOptions();
+
 
       // Fetch favorite recipes after fetching all recipes
       await getFavoriteRecipes();
@@ -103,6 +120,7 @@ class RecipeProvider with ChangeNotifier {
     }
   }
 
+
   void _setNextOptions() {
     if (_recipes.length >= 2) {
       _currentOptionA = _recipes.removeAt(0);
@@ -114,8 +132,10 @@ class RecipeProvider with ChangeNotifier {
     notifyListeners();
   }
 
+
   void handleOptionSelected(Recipe selectedRecipe) {
     _setNextOptions();
     notifyListeners();
   }
 }
+

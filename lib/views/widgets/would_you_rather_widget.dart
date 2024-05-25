@@ -4,10 +4,12 @@ import 'package:recipe_swiper/models/recipe.dart';
 import 'package:recipe_swiper/providers/recipe_provider.dart';
 import 'package:recipe_swiper/views/widgets/recipe_card.dart';
 
+
 class WouldYouRatherWidget extends StatelessWidget {
   final Recipe optionA;
   final Recipe optionB;
   final Function(Recipe) onOptionSelected;
+
 
   const WouldYouRatherWidget({
     Key? key,
@@ -16,9 +18,11 @@ class WouldYouRatherWidget extends StatelessWidget {
     required this.onOptionSelected,
   }) : super(key: key);
 
+
   @override
   Widget build(BuildContext context) {
     final recipeProvider = Provider.of<RecipeProvider>(context);
+
 
     return Column(
       children: <Widget>[
@@ -87,3 +91,4 @@ class WouldYouRatherWidget extends StatelessWidget {
     );
   }
 }
+
