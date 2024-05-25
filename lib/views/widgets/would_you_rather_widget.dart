@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:recipe_swiper/models/recipe.dart';
+import 'package:recipe_swiper/providers/recipe_provider.dart';
 import 'package:recipe_swiper/views/widgets/recipe_card.dart';
 
 class WouldYouRatherWidget extends StatelessWidget {
@@ -16,16 +18,31 @@ class WouldYouRatherWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final recipeProvider = Provider.of<RecipeProvider>(context);
+
     return Column(
       children: <Widget>[
         Expanded(
           child: GestureDetector(
             onTap: () => onOptionSelected(optionA),
-            child: RecipeCard(
-              title: optionA.name,
-              cookTime: optionA.totalTime,
-              rating: optionA.rating.toString(),
-              thumbnailUrl: optionA.images,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: RecipeCard(
+                    title: optionA.name,
+                    cookTime: optionA.totalTime,
+                    rating: optionA.rating.toString(),
+                    thumbnailUrl: optionA.images,
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    icon: Icon(Icons.favorite_border),
+                    onPressed: () => recipeProvider.addFavoriteRecipe(optionA),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -45,11 +62,24 @@ class WouldYouRatherWidget extends StatelessWidget {
         Expanded(
           child: GestureDetector(
             onTap: () => onOptionSelected(optionB),
-            child: RecipeCard(
-              title: optionB.name,
-              cookTime: optionB.totalTime,
-              rating: optionB.rating.toString(),
-              thumbnailUrl: optionB.images,
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: RecipeCard(
+                    title: optionB.name,
+                    cookTime: optionB.totalTime,
+                    rating: optionB.rating.toString(),
+                    thumbnailUrl: optionB.images,
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    icon: Icon(Icons.favorite_border),
+                    onPressed: () => recipeProvider.addFavoriteRecipe(optionB),
+                  ),
+                ),
+              ],
             ),
           ),
         ),

@@ -5,7 +5,6 @@ import 'package:recipe_swiper/providers/user_provider.dart';
 import 'package:recipe_swiper/services/supabase_service.dart';
 import 'package:recipe_swiper/views/login_page.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SupabaseService().initialize();
