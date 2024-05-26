@@ -6,7 +6,6 @@ import 'package:recipe_swiper/views/home_page.dart';
 import 'package:recipe_swiper/views/widgets/carousel_slider_widget.dart';
 
 
-
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();

@@ -36,13 +36,17 @@ class WouldYouRatherWidget extends StatelessWidget {
                     title: optionA.name,
                     cookTime: optionA.totalTime,
                     rating: optionA.rating.toString(),
-                    thumbnailUrl: optionA.images,
+                    thumbnailUrl: optionA.imageUrl,
+                    recipe: optionA, // Pass the recipe object
                   ),
                 ),
                 Align(
                   alignment: Alignment.topRight,
                   child: IconButton(
-                    icon: Icon(Icons.favorite_border),
+                    icon: Icon(
+                      Icons.favorite_border,
+                      color: Colors.red,
+                    ),
                     onPressed: () => recipeProvider.addFavoriteRecipe(optionA),
                   ),
                 ),
@@ -73,13 +77,17 @@ class WouldYouRatherWidget extends StatelessWidget {
                     title: optionB.name,
                     cookTime: optionB.totalTime,
                     rating: optionB.rating.toString(),
-                    thumbnailUrl: optionB.images,
+                    thumbnailUrl: optionB.imageUrl,
+                    recipe: optionB,
                   ),
                 ),
                 Align(
                   alignment: Alignment.topRight,
                   child: IconButton(
-                    icon: Icon(Icons.favorite_border),
+                    icon: Icon(
+                      Icons.favorite_border,
+                      color: Colors.red,
+                    ),
                     onPressed: () => recipeProvider.addFavoriteRecipe(optionB),
                   ),
                 ),

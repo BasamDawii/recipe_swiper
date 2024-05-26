@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:recipe_swiper/models/recipe.dart';
+import 'package:recipe_swiper/views/recipe_detail_page.dart';
 
 
 class RecipeCard extends StatelessWidget {
@@ -6,6 +8,7 @@ class RecipeCard extends StatelessWidget {
   final String rating;
   final String cookTime;
   final String thumbnailUrl;
+  final Recipe recipe;
 
 
   RecipeCard({
@@ -13,6 +16,7 @@ class RecipeCard extends StatelessWidget {
     required this.cookTime,
     required this.rating,
     required this.thumbnailUrl,
+    required this.recipe,
   });
 
 
@@ -101,6 +105,19 @@ class RecipeCard extends StatelessWidget {
                       Text(cookTime),
                     ],
                   ),
+                ),
+                // Add this IconButton
+                IconButton(
+                  icon: Icon(Icons.info),
+                  color: Colors.white,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RecipeDetailPage(recipe: recipe),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

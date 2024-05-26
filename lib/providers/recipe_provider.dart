@@ -4,6 +4,9 @@ import 'package:recipe_swiper/services/recipe_api.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 
+import '../views/widgets/message_banner.dart';
+
+
 class RecipeProvider with ChangeNotifier {
   List<Recipe> _recipes = [];
   List<Recipe> _favoriteRecipes = [];
@@ -13,6 +16,10 @@ class RecipeProvider with ChangeNotifier {
 
   Recipe? _currentOptionA;
   Recipe? _currentOptionB;
+  String? _message;
+  MessageType? _messageType;
+
+
 
 
   List<Recipe> get recipes => _recipes;
@@ -21,10 +28,17 @@ class RecipeProvider with ChangeNotifier {
   bool get isFavoriteLoading => _isFavoriteLoading;
   Recipe? get currentOptionA => _currentOptionA;
   Recipe? get currentOptionB => _currentOptionB;
+  String? get message => _message;
+  MessageType? get messageType => _messageType;
 
 
   RecipeProvider() {
     getRecipes();
+  }
+  void _setMessage(String message, MessageType type) {
+    _message = message;
+    _messageType = type;
+    notifyListeners();
   }
 
 
@@ -45,9 +59,14 @@ class RecipeProvider with ChangeNotifier {
 
 
       List<String> favoriteRecipeIds = response.map((item) => item['recipe_id'] as String).toList();
-      _favoriteRecipes = _recipes.where((recipe) => favoriteRecipeIds.contains(recipe.id)).toList();
+      List<Recipe> favoriteRecipes = [];
+      for (String id in favoriteRecipeIds) {
+        Recipe recipe = await RecipeApi.getRecipeById(id);
+        favoriteRecipes.add(recipe);
+      }
+      _favoriteRecipes = favoriteRecipes;
     } catch (e) {
-      print('Error fetching favorite recipes: $e');
+      _setMessage('Error fetching favorite recipes: $e', MessageType.error);
     } finally {
       _isFavoriteLoading = false;
       notifyListeners();
@@ -70,9 +89,10 @@ class RecipeProvider with ChangeNotifier {
 
 
       _favoriteRecipes.add(recipe);
+      _setMessage('Recipe added to favorites', MessageType.success);
       notifyListeners();
     } catch (e) {
-      print('Error adding favorite recipe: $e');
+      _setMessage('Error adding favorite recipe: $e', MessageType.error);
     }
   }
 
@@ -91,9 +111,10 @@ class RecipeProvider with ChangeNotifier {
 
 
       _favoriteRecipes.remove(recipe);
+      _setMessage('Recipe removed from favorites', MessageType.success);
       notifyListeners();
     } catch (e) {
-      print('Error removing favorite recipe: $e');
+      _setMessage('Error removing favorite recipe: $e', MessageType.error);
     }
   }
 
@@ -104,19 +125,37 @@ class RecipeProvider with ChangeNotifier {
       notifyListeners();
 
 
-      _recipes = await RecipeApi.getRecipe();
+      _recipes = [];
+      _recipes.addAll(await RecipeApi.getRecipe());
+      _recipes.addAll(await RecipeApi.getRecipe());
+
+
       _isLoading = false;
       _setNextOptions();
 
 
-      // Fetch favorite recipes after fetching all recipes
       await getFavoriteRecipes();
     } catch (e) {
       _isLoading = false;
-      print('Error fetching recipes: $e');
+      _setMessage('Error fetching recipes: $e', MessageType.error);
       rethrow;
     } finally {
       notifyListeners();
+    }
+  }
+
+
+  Future<void> fetchNewRecipes() async {
+    try {
+      List<Recipe> newRecipes = [];
+      newRecipes.addAll(await RecipeApi.getRecipe());
+      newRecipes.addAll(await RecipeApi.getRecipe());
+
+
+      _recipes = newRecipes;
+      _setNextOptions();
+    } catch (e) {
+      _setMessage('Error fetching new recipes: $e', MessageType.error);
     }
   }
 
@@ -133,8 +172,13 @@ class RecipeProvider with ChangeNotifier {
   }
 
 
-  void handleOptionSelected(Recipe selectedRecipe) {
-    _setNextOptions();
+  void handleOptionSelected(Recipe selectedRecipe) async {
+    await fetchNewRecipes();
+    notifyListeners();
+  }
+  void clearMessage() {
+    _message = null;
+    _messageType = null;
     notifyListeners();
   }
 }

@@ -28,7 +28,8 @@ class FavoritesPage extends StatelessWidget {
                 title: recipe.name,
                 cookTime: recipe.totalTime,
                 rating: recipe.rating.toString(),
-                thumbnailUrl: recipe.images,
+                thumbnailUrl: recipe.imageUrl,
+                recipe: recipe, // Add this line to pass the recipe object
               ),
               Align(
                 alignment: Alignment.topRight,
