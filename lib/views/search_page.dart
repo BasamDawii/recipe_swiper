@@ -4,24 +4,20 @@ import 'package:provider/provider.dart';
 import 'package:recipe_swiper/providers/recipe_provider.dart';
 import 'package:recipe_swiper/views/widgets/recipe_card.dart';
 
-
 class SearchPage extends StatefulWidget {
   @override
   _SearchPageState createState() => _SearchPageState();
 }
 
-
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _searchController = TextEditingController();
   Timer? _debounce;
-
 
   @override
   void initState() {
     super.initState();
     _searchController.addListener(_onSearchChanged);
   }
-
 
   @override
   void dispose() {
@@ -31,29 +27,31 @@ class _SearchPageState extends State<SearchPage> {
     super.dispose();
   }
 
-
   _onSearchChanged() {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
       final query = _searchController.text;
       if (query.isNotEmpty) {
-        Provider.of<RecipeProvider>(context, listen: false).searchRecipes(query);
+        Provider.of<RecipeProvider>(context, listen: false)
+            .searchRecipes(query);
       } else {
-        Provider.of<RecipeProvider>(context, listen: false).clearSearchResults();
+        Provider.of<RecipeProvider>(context, listen: false)
+            .clearSearchResults();
       }
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
     final recipeProvider = Provider.of<RecipeProvider>(context);
 
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('Search Recipes'),
-        backgroundColor: Colors.red.shade400,
+        title: Text(
+          'Search Recipes',
+          style: TextStyle(color: Color(0xFFFFFFFF)),
+        ),
+        backgroundColor: Color(0xFF657990),
       ),
       body: Column(
         children: [
@@ -63,9 +61,16 @@ class _SearchPageState extends State<SearchPage> {
               controller: _searchController,
               decoration: InputDecoration(
                 labelText: 'Search',
-                border: OutlineInputBorder(),
-                suffixIcon: Icon(Icons.search),
+                labelStyle: TextStyle(color: Color(0xFF34495E)),
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFF34495E)),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Color(0xFF16A085)),
+                ),
+                suffixIcon: Icon(Icons.search, color: Color(0xFF34495E)),
               ),
+              style: TextStyle(color: Color(0xFF34495E)),
             ),
           ),
           Expanded(
@@ -75,7 +80,7 @@ class _SearchPageState extends State<SearchPage> {
                 ? Center(
               child: Text(
                 'No recipes found. Try a different search.',
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 18, color: Color(0xFF34495E)),
               ),
             )
                 : ListView.builder(
@@ -97,4 +102,3 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 }
-

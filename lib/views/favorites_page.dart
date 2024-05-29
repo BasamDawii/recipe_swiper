@@ -4,9 +4,7 @@ import 'package:recipe_swiper/l10n/l10n.dart';
 import 'package:recipe_swiper/providers/recipe_provider.dart';
 import 'package:recipe_swiper/views/widgets/recipe_card.dart';
 
-
 import '../providers/localization_provider.dart';
-
 
 class FavoritesPage extends StatelessWidget {
   @override
@@ -14,27 +12,23 @@ class FavoritesPage extends StatelessWidget {
     final recipeProvider = Provider.of<RecipeProvider>(context);
     final localizationProvider = Provider.of<LocalizationProvider>(context);
 
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(L10n.translate('favorites')!),
-        backgroundColor: Colors.red.shade400,
+        title: Text(
+          L10n.translate('favorites')!,
+          style: TextStyle(color: Color(0xFFECF0F1)),
+        ),
+        backgroundColor: Color(0xFF657990),
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.orange.shade300, Colors.red.shade400],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
+        color: Color(0xFFECF0F1),
         child: recipeProvider.isFavoriteLoading
             ? Center(child: CircularProgressIndicator())
             : recipeProvider.favoriteRecipes.isEmpty
             ? Center(
           child: Text(
             L10n.translate('no_more_recipes')!,
-            style: TextStyle(fontSize: 18, color: Colors.white),
+            style: TextStyle(fontSize: 18, color: Color(0xFFECF0F1)),
           ),
         )
             : ListView.builder(
@@ -56,10 +50,11 @@ class FavoritesPage extends StatelessWidget {
                   child: IconButton(
                     icon: Icon(
                       Icons.favorite,
-                      color: Colors.red,
+                      color: Color(0xFFFF6F61),
                     ),
                     onPressed: () {
-                      recipeProvider.removeFavoriteRecipe(context, recipe);
+                      recipeProvider.removeFavoriteRecipe(
+                          context, recipe);
                     },
                   ),
                 ),
@@ -71,4 +66,3 @@ class FavoritesPage extends StatelessWidget {
     );
   }
 }
-

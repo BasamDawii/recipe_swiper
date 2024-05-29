@@ -5,26 +5,21 @@ import 'package:recipe_swiper/providers/user_provider.dart';
 import 'package:recipe_swiper/views/home_page.dart';
 import 'package:recipe_swiper/views/widgets/carousel_slider_widget.dart';
 
-
 import '../providers/localization_provider.dart';
-
 
 class RegisterPage extends StatefulWidget {
   @override
   _RegisterPageState createState() => _RegisterPageState();
 }
 
-
 class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
 
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     final localizationProvider = Provider.of<LocalizationProvider>(context);
-
 
     return Scaffold(
       body: Stack(
@@ -45,9 +40,15 @@ class _RegisterPageState extends State<RegisterPage> {
                       controller: _emailController,
                       decoration: InputDecoration(
                         labelText: L10n.translate('email'),
+                        labelStyle: TextStyle(color: Color(0xFF34495E)),
                         fillColor: Colors.white,
                         filled: true,
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF34495E)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF16A085)),
+                        ),
                       ),
                     ),
                     SizedBox(height: 10),
@@ -55,9 +56,15 @@ class _RegisterPageState extends State<RegisterPage> {
                       controller: _passwordController,
                       decoration: InputDecoration(
                         labelText: L10n.translate('password'),
+                        labelStyle: TextStyle(color: Color(0xFF34495E)),
                         fillColor: Colors.white,
                         filled: true,
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF34495E)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF16A085)),
+                        ),
                       ),
                       obscureText: true,
                     ),
@@ -65,6 +72,9 @@ class _RegisterPageState extends State<RegisterPage> {
                     userProvider.isLoading
                         ? CircularProgressIndicator()
                         : ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFFFFFFF),
+                      ),
                       onPressed: () async {
                         await userProvider.signUp(
                           context,
@@ -83,14 +93,19 @@ class _RegisterPageState extends State<RegisterPage> {
                     ),
                     SizedBox(height: 20),
                     userProvider.errorMessage != null
-                        ? Text(userProvider.errorMessage!,
-                        style: TextStyle(color: Colors.red))
+                        ? Text(
+                      userProvider.errorMessage!,
+                      style: TextStyle(color: Colors.red),
+                    )
                         : Container(),
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text(L10n.translate('back_to_login')!),
+                      child: Text(
+                        L10n.translate('back_to_login')!,
+                        style: TextStyle(color: Color(0xFFFFFFFF)),
+                      ),
                     ),
                   ],
                 ),
@@ -102,4 +117,3 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 }
-

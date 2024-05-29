@@ -6,17 +6,14 @@ import 'package:recipe_swiper/views/favorites_page.dart';
 import 'package:recipe_swiper/views/widgets/swipe_recipe_widget.dart';
 import 'package:recipe_swiper/views/login_page.dart';
 
-
 import '../l10n/l10n.dart';
 import '../providers/localization_provider.dart';
 import '../providers/user_provider.dart';
-
 
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
 }
-
 
 class _HomePageState extends State<HomePage> {
   @override
@@ -27,18 +24,16 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final recipeProvider = Provider.of<RecipeProvider>(context, listen: false);
 
-
     return Scaffold(
       appBar: AppBar(
         title: Row(
           children: [
-            Icon(Icons.restaurant_menu),
+            Icon(Icons.restaurant_menu, color: Colors.white),
             SizedBox(width: 10),
             Expanded(
               child: Consumer<LocalizationProvider>(
@@ -47,6 +42,7 @@ class _HomePageState extends State<HomePage> {
                     L10n.translate('title')!,
                     style: TextStyle(
                       fontSize: 18,
+                      color: Colors.white,
                     ),
                     overflow: TextOverflow.ellipsis,
                   );
@@ -55,16 +51,16 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        backgroundColor: Colors.red.shade400,
+        backgroundColor: Color(0xFF657990),
         actions: [
           IconButton(
-            icon: Icon(Icons.language),
+            icon: Icon(Icons.language, color: Colors.white),
             onPressed: () {
               _showLanguageDialog(context);
             },
           ),
           IconButton(
-            icon: Icon(Icons.favorite),
+            icon: Icon(Icons.favorite, color: Colors.red),
             onPressed: () {
               Navigator.push(
                 context,
@@ -73,7 +69,7 @@ class _HomePageState extends State<HomePage> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.search),
+            icon: Icon(Icons.search, color: Colors.white),
             onPressed: () {
               Navigator.push(
                 context,
@@ -82,7 +78,7 @@ class _HomePageState extends State<HomePage> {
             },
           ),
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: Icon(Icons.logout, color: Colors.white),
             onPressed: () async {
               await userProvider.signOut(context);
               Navigator.pushReplacement(
@@ -94,13 +90,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.orange.shade300, Colors.red.shade400],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
+        color: Color(0xFF2C3E50),
         child: Column(
           children: [
             Expanded(
@@ -112,18 +102,17 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
   void _showLanguageDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Choose Language'),
+          title: Text('Choose Language', style: TextStyle(color: Color(0xFF34495E))),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: Text('English'),
+                title: Text('English', style: TextStyle(color: Color(0xFF34495E))),
                 onTap: () {
                   Provider.of<LocalizationProvider>(context, listen: false)
                       .setLocale('en')
@@ -133,7 +122,7 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
-                title: Text('العربية'),
+                title: Text('العربية', style: TextStyle(color: Color(0xFF34495E))),
                 onTap: () {
                   Provider.of<LocalizationProvider>(context, listen: false)
                       .setLocale('ar')
@@ -143,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               ListTile(
-                title: Text('Dansk'),
+                title: Text('Dansk', style: TextStyle(color: Color(0xFF34495E))),
                 onTap: () {
                   Provider.of<LocalizationProvider>(context, listen: false)
                       .setLocale('da')
@@ -159,4 +148,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-

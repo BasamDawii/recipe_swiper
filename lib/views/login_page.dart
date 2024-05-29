@@ -6,26 +6,21 @@ import 'package:recipe_swiper/views/home_page.dart';
 import 'package:recipe_swiper/views/register_page.dart';
 import 'package:recipe_swiper/views/widgets/carousel_slider_widget.dart';
 
-
 import '../providers/localization_provider.dart';
-
 
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
-
 class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
 
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
     final localizationProvider = Provider.of<LocalizationProvider>(context);
-
 
     return Scaffold(
       body: Stack(
@@ -46,9 +41,15 @@ class _LoginPageState extends State<LoginPage> {
                       controller: _emailController,
                       decoration: InputDecoration(
                         labelText: L10n.translate('email'),
+                        labelStyle: TextStyle(color: Color(0xFF34495E)),
                         fillColor: Colors.white,
                         filled: true,
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF34495E)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF16A085)),
+                        ),
                       ),
                     ),
                     SizedBox(height: 10),
@@ -56,9 +57,15 @@ class _LoginPageState extends State<LoginPage> {
                       controller: _passwordController,
                       decoration: InputDecoration(
                         labelText: L10n.translate('password'),
+                        labelStyle: TextStyle(color: Color(0xFF34495E)),
                         fillColor: Colors.white,
                         filled: true,
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF34495E)),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFF16A085)),
+                        ),
                       ),
                       obscureText: true,
                     ),
@@ -66,6 +73,9 @@ class _LoginPageState extends State<LoginPage> {
                     userProvider.isLoading
                         ? CircularProgressIndicator()
                         : ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFFFFFFF),
+                      ),
                       onPressed: () async {
                         await userProvider.signIn(
                           context,
@@ -95,7 +105,10 @@ class _LoginPageState extends State<LoginPage> {
                               builder: (context) => RegisterPage()),
                         );
                       },
-                      child: Text(L10n.translate('register')!),
+                      child: Text(
+                        L10n.translate('register')!,
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                     SizedBox(height: 20),
                     _buildLanguageSelector(context, localizationProvider),
@@ -108,7 +121,6 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
 
   Widget _buildLanguageSelector(
       BuildContext context, LocalizationProvider localizationProvider) {
@@ -129,11 +141,10 @@ class _LoginPageState extends State<LoginPage> {
                 : value == 'ar'
                 ? 'العربية'
                 : 'Dansk',
-            style: TextStyle(color: Colors.black),
+            style: TextStyle(color: Colors.white),
           ),
         );
       }).toList(),
     );
   }
 }
-
