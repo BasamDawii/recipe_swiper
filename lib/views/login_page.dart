@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:recipe_swiper/l10n/l10n.dart';
 import 'package:recipe_swiper/providers/user_provider.dart';
-import 'package:recipe_swiper/views/register_page.dart';
 import 'package:recipe_swiper/views/home_page.dart';
+import 'package:recipe_swiper/views/register_page.dart';
 import 'package:recipe_swiper/views/widgets/carousel_slider_widget.dart';
+
+
+import '../providers/localization_provider.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -20,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context);
+    final localizationProvider = Provider.of<LocalizationProvider>(context);
 
 
     return Scaffold(
@@ -40,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
                     TextField(
                       controller: _emailController,
                       decoration: InputDecoration(
-                        labelText: 'Email',
+                        labelText: L10n.translate('email'),
                         fillColor: Colors.white,
                         filled: true,
                         border: OutlineInputBorder(),
@@ -50,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                     TextField(
                       controller: _passwordController,
                       decoration: InputDecoration(
-                        labelText: 'Password',
+                        labelText: L10n.translate('password'),
                         fillColor: Colors.white,
                         filled: true,
                         border: OutlineInputBorder(),
@@ -63,31 +68,37 @@ class _LoginPageState extends State<LoginPage> {
                         : ElevatedButton(
                       onPressed: () async {
                         await userProvider.signIn(
+                          context,
                           _emailController.text,
                           _passwordController.text,
                         );
                         if (userProvider.errorMessage == null) {
                           Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (context) => HomePage()),
+                            MaterialPageRoute(
+                                builder: (context) => HomePage()),
                           );
                         }
                       },
-                      child: Text('Login'),
+                      child: Text(L10n.translate('login')!),
                     ),
                     SizedBox(height: 20),
                     userProvider.errorMessage != null
-                        ? Text(userProvider.errorMessage!, style: TextStyle(color: Colors.red))
+                        ? Text(userProvider.errorMessage!,
+                        style: TextStyle(color: Colors.red))
                         : Container(),
                     TextButton(
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => RegisterPage()),
+                          MaterialPageRoute(
+                              builder: (context) => RegisterPage()),
                         );
                       },
-                      child: Text('Register'),
+                      child: Text(L10n.translate('register')!),
                     ),
+                    SizedBox(height: 20),
+                    _buildLanguageSelector(context, localizationProvider),
                   ],
                 ),
               ),
@@ -95,6 +106,33 @@ class _LoginPageState extends State<LoginPage> {
           ),
         ],
       ),
+    );
+  }
+
+
+  Widget _buildLanguageSelector(
+      BuildContext context, LocalizationProvider localizationProvider) {
+    return DropdownButton<String>(
+      value: localizationProvider.currentLocale,
+      onChanged: (String? newValue) {
+        if (newValue != null) {
+          localizationProvider.setLocale(newValue);
+        }
+      },
+      items: <String>['en', 'ar', 'da']
+          .map<DropdownMenuItem<String>>((String value) {
+        return DropdownMenuItem<String>(
+          value: value,
+          child: Text(
+            value == 'en'
+                ? 'English'
+                : value == 'ar'
+                ? 'العربية'
+                : 'Dansk',
+            style: TextStyle(color: Colors.black),
+          ),
+        );
+      }).toList(),
     );
   }
 }

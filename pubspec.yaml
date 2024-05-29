@@ -33,7 +33,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.1
+  http: ^1.2.1
 
 
 
@@ -45,11 +45,15 @@ dependencies:
   provider: ^6.1.2
   supabase_flutter: ^2.5.3
   url_launcher: ^6.2.6
+  flutter_swipable: ^1.2.1
+  flutter_localizations:
+    sdk: flutter
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  intl: 0.19.0
 
 
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -57,7 +61,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
 
 
 # For information on the generic Dart part of this file, see the
@@ -71,6 +75,10 @@ flutter:
     - assets/images/food2.jpg
     - assets/images/food3.jpg
     - assets/images/food4.jpg
+    - assets/lang/en.json
+    - assets/lang/ar.json
+    - assets/lang/da.json
+
 
 
   # The following line ensures that the Material Icons font is

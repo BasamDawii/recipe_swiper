@@ -10,39 +10,76 @@ import '../views/widgets/message_banner.dart';
 class RecipeProvider with ChangeNotifier {
   List<Recipe> _recipes = [];
   List<Recipe> _favoriteRecipes = [];
+  List<Recipe> _searchResults = [];
+  bool _isSearchLoading = false;
   bool _isLoading = true;
   bool _isFavoriteLoading = false;
 
 
-  Recipe? _currentOptionA;
-  Recipe? _currentOptionB;
-  String? _message;
-  MessageType? _messageType;
+  Recipe? _currentRecipe;
 
 
 
 
+  List<Recipe> get searchResults => _searchResults;
+  bool get isSearchLoading => _isSearchLoading;
   List<Recipe> get recipes => _recipes;
   List<Recipe> get favoriteRecipes => _favoriteRecipes;
   bool get isLoading => _isLoading;
   bool get isFavoriteLoading => _isFavoriteLoading;
-  Recipe? get currentOptionA => _currentOptionA;
-  Recipe? get currentOptionB => _currentOptionB;
-  String? get message => _message;
-  MessageType? get messageType => _messageType;
+  Recipe? get currentRecipe => _currentRecipe;
 
 
-  RecipeProvider() {
-    getRecipes();
+  void init(BuildContext context) {
+    getRecipes(context);
   }
-  void _setMessage(String message, MessageType type) {
-    _message = message;
-    _messageType = type;
+
+
+  Future<void> searchRecipes(String query) async {
+    try {
+      _isSearchLoading = true;
+      notifyListeners();
+
+
+      List<Recipe> results = await RecipeApi.searchRecipes(query);
+      _searchResults = results;
+    } catch (e) {
+      print('Error searching recipes: $e');
+    } finally {
+      _isSearchLoading = false;
+      notifyListeners();
+    }
+  }
+  void clearSearchResults() {
+    _searchResults = [];
     notifyListeners();
   }
 
 
-  Future<void> getFavoriteRecipes() async {
+  void _setMessage(BuildContext context, String message, MessageType type) {
+    final color = _getMessageColor(type);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: color,
+      ),
+    );
+  }
+
+
+  Color _getMessageColor(MessageType type) {
+    switch (type) {
+      case MessageType.error:
+        return Colors.red;
+      case MessageType.success:
+        return Colors.green;
+      default:
+        return Colors.blue;
+    }
+  }
+
+
+  Future<void> getFavoriteRecipes(BuildContext context) async {
     final userId = Supabase.instance.client.auth.currentUser?.id;
     if (userId == null) return;
 
@@ -66,7 +103,7 @@ class RecipeProvider with ChangeNotifier {
       }
       _favoriteRecipes = favoriteRecipes;
     } catch (e) {
-      _setMessage('Error fetching favorite recipes: $e', MessageType.error);
+      _setMessage(context, 'Error fetching favorite recipes: $e', MessageType.error);
     } finally {
       _isFavoriteLoading = false;
       notifyListeners();
@@ -74,7 +111,7 @@ class RecipeProvider with ChangeNotifier {
   }
 
 
-  Future<void> addFavoriteRecipe(Recipe recipe) async {
+  Future<void> addFavoriteRecipe(BuildContext context, Recipe recipe) async {
     final userId = Supabase.instance.client.auth.currentUser?.id;
     if (userId == null) return;
 
@@ -89,15 +126,15 @@ class RecipeProvider with ChangeNotifier {
 
 
       _favoriteRecipes.add(recipe);
-      _setMessage('Recipe added to favorites', MessageType.success);
+      _setMessage(context, 'Recipe added to favorites', MessageType.success);
       notifyListeners();
     } catch (e) {
-      _setMessage('Error adding favorite recipe: $e', MessageType.error);
+      _setMessage(context, 'Error adding favorite recipe: $e', MessageType.error);
     }
   }
 
 
-  Future<void> removeFavoriteRecipe(Recipe recipe) async {
+  Future<void> removeFavoriteRecipe(BuildContext context, Recipe recipe) async {
     final userId = Supabase.instance.client.auth.currentUser?.id;
     if (userId == null) return;
 
@@ -111,33 +148,32 @@ class RecipeProvider with ChangeNotifier {
 
 
       _favoriteRecipes.remove(recipe);
-      _setMessage('Recipe removed from favorites', MessageType.success);
+      _setMessage(context, 'Recipe removed from favorites', MessageType.success);
       notifyListeners();
     } catch (e) {
-      _setMessage('Error removing favorite recipe: $e', MessageType.error);
+      _setMessage(context, 'Error removing favorite recipe: $e', MessageType.error);
     }
   }
 
 
-  Future<void> getRecipes() async {
+  Future<void> getRecipes(BuildContext context) async {
     try {
       _isLoading = true;
       notifyListeners();
 
 
-      _recipes = [];
-      _recipes.addAll(await RecipeApi.getRecipe());
-      _recipes.addAll(await RecipeApi.getRecipe());
+      List<Recipe> newRecipes = await RecipeApi.getRecipe();
+      _recipes.addAll(newRecipes);
 
 
       _isLoading = false;
-      _setNextOptions();
+      _setNextRecipe(context);
 
 
-      await getFavoriteRecipes();
+      await getFavoriteRecipes(context);
     } catch (e) {
       _isLoading = false;
-      _setMessage('Error fetching recipes: $e', MessageType.error);
+      _setMessage(context, 'Error fetching recipes: $e', MessageType.error);
       rethrow;
     } finally {
       notifyListeners();
@@ -145,41 +181,41 @@ class RecipeProvider with ChangeNotifier {
   }
 
 
-  Future<void> fetchNewRecipes() async {
+  Future<void> fetchNewRecipe(BuildContext context) async {
     try {
-      List<Recipe> newRecipes = [];
-      newRecipes.addAll(await RecipeApi.getRecipe());
-      newRecipes.addAll(await RecipeApi.getRecipe());
-
-
-      _recipes = newRecipes;
-      _setNextOptions();
+      List<Recipe> newRecipes = await RecipeApi.getRecipe();
+      _recipes.addAll(newRecipes);
     } catch (e) {
-      _setMessage('Error fetching new recipes: $e', MessageType.error);
+      _setMessage(context, 'Error fetching new recipes: $e', MessageType.error);
     }
   }
 
 
-  void _setNextOptions() {
-    if (_recipes.length >= 2) {
-      _currentOptionA = _recipes.removeAt(0);
-      _currentOptionB = _recipes.removeAt(0);
+  void _setNextRecipe(BuildContext context) async {
+    if (_recipes.isNotEmpty) {
+      _currentRecipe = _recipes.removeAt(0);
     } else {
-      _currentOptionA = null;
-      _currentOptionB = null;
+      await fetchNewRecipe(context);
+      if (_recipes.isNotEmpty) {
+        _currentRecipe = _recipes.removeAt(0);
+      } else {
+        _currentRecipe = null;
+      }
     }
     notifyListeners();
   }
 
 
-  void handleOptionSelected(Recipe selectedRecipe) async {
-    await fetchNewRecipes();
-    notifyListeners();
+  void handleSwipeRight(BuildContext context) async {
+    if (_currentRecipe != null) {
+      await addFavoriteRecipe(context, _currentRecipe!);
+    }
+    _setNextRecipe(context);
   }
-  void clearMessage() {
-    _message = null;
-    _messageType = null;
-    notifyListeners();
+
+
+  void handleSwipeLeft(BuildContext context) {
+    _setNextRecipe(context);
   }
 }
 

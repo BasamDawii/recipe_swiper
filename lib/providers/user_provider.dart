@@ -13,22 +13,36 @@ class UserProvider with ChangeNotifier {
   MessageType? _messageType;
 
 
-
-
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   String? get message => _message;
   MessageType? get messageType => _messageType;
 
 
-  void _setMessage(String message, MessageType type) {
-    _message = message;
-    _messageType = type;
-    notifyListeners();
+  void _setMessage(BuildContext context, String message, MessageType type) {
+    final color = _getMessageColor(type);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: color,
+      ),
+    );
   }
 
 
-  Future<void> signIn(String email, String password) async {
+  Color _getMessageColor(MessageType type) {
+    switch (type) {
+      case MessageType.error:
+        return Colors.red;
+      case MessageType.success:
+        return Colors.green;
+      default:
+        return Colors.blue;
+    }
+  }
+
+
+  Future<void> signIn(BuildContext context, String email, String password) async {
     _isLoading = true;
     notifyListeners();
 
@@ -42,14 +56,14 @@ class UserProvider with ChangeNotifier {
 
       if (response.user == null) {
         _errorMessage = 'Login failed';
-        _setMessage('Login failed', MessageType.error);
+        _setMessage(context, 'Login failed', MessageType.error);
       } else {
         _errorMessage = null;
-        _setMessage('Login successful', MessageType.success);
+        _setMessage(context, 'Login successful', MessageType.success);
       }
     } catch (e) {
       _errorMessage = 'An error occurred. Please try again.';
-      _setMessage('An error occurred. Please try again.', MessageType.error);
+      _setMessage(context, 'An error occurred. Please try again.', MessageType.error);
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -57,7 +71,7 @@ class UserProvider with ChangeNotifier {
   }
 
 
-  Future<void> signUp(String email, String password) async {
+  Future<void> signUp(BuildContext context, String email, String password) async {
     _isLoading = true;
     notifyListeners();
 
@@ -71,14 +85,14 @@ class UserProvider with ChangeNotifier {
 
       if (response.user == null) {
         _errorMessage = 'Registration failed';
-        _setMessage('Registration failed', MessageType.error);
+        _setMessage(context, 'Registration failed', MessageType.error);
       } else {
         _errorMessage = null;
-        _setMessage('Registration successful, please check your inbox to verify your mail', MessageType.success);
+        _setMessage(context, 'Registration successful, please check your inbox to verify your mail', MessageType.success);
       }
     } catch (e) {
       _errorMessage = 'An error occurred. Please try again.';
-      _setMessage('An error occurred. Please try again.', MessageType.error);
+      _setMessage(context, 'An error occurred. Please try again.', MessageType.error);
     } finally {
       _isLoading = false;
       notifyListeners();
@@ -86,23 +100,18 @@ class UserProvider with ChangeNotifier {
   }
 
 
-  Future<void> signOut() async {
+  Future<void> signOut(BuildContext context) async {
     _isLoading = true;
     notifyListeners();
     try {
       await supabaseClient.auth.signOut();
-      _setMessage('Signed out successfully', MessageType.success);
+      _setMessage(context, 'Signed out successfully', MessageType.success);
     } catch (e) {
-      _setMessage('Error signing out: $e', MessageType.error);
+      _setMessage(context, 'Error signing out: $e', MessageType.error);
     } finally {
       _isLoading = false;
       notifyListeners();
     }
-  }
-  void clearMessage() {
-    _message = null;
-    _messageType = null;
-    notifyListeners();
   }
 }
 

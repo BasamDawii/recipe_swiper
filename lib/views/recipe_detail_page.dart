@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:recipe_swiper/l10n/l10n.dart';
 import 'package:recipe_swiper/models/recipe.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -25,35 +27,62 @@ class RecipeDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(recipe.name),
+        backgroundColor: Colors.red.shade400,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
-            Image.network(recipe.imageUrl),
+            Card(
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.network(recipe.imageUrl, fit: BoxFit.cover),
+              ),
+            ),
             SizedBox(height: 16),
             Text(
               recipe.name,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
             ),
             SizedBox(height: 8),
-            Text('Rating: ${recipe.rating}'),
+            Text(
+              'Rating: ${recipe.rating}',
+              style: TextStyle(fontSize: 18, color: Colors.grey.shade700),
+              textAlign: TextAlign.center,
+            ),
             SizedBox(height: 8),
-            Text('Total Time: ${recipe.totalTime}'),
+            Text(
+              'Total Time: ${recipe.totalTime}',
+              style: TextStyle(fontSize: 18, color: Colors.grey.shade700),
+              textAlign: TextAlign.center,
+            ),
             SizedBox(height: 16),
             Text(
               'Instructions',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
-            Text(recipe.instructions),
+            Text(
+              recipe.instructions,
+              style: TextStyle(fontSize: 16),
+            ),
             SizedBox(height: 16),
             if (recipe.youtubeUrl.isNotEmpty)
               TextButton(
                 onPressed: () {
                   _launchURL(recipe.youtubeUrl);
                 },
-                child: Text('Watch on YouTube'),
+                child: Text(L10n.translate('watch_on_youtube')!),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.red.shade400,
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                ),
               ),
           ],
         ),

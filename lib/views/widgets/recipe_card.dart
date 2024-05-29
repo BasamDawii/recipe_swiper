@@ -56,6 +56,8 @@ class RecipeCard extends StatelessWidget {
                 title,
                 style: TextStyle(
                   fontSize: 19,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
@@ -83,7 +85,12 @@ class RecipeCard extends StatelessWidget {
                         size: 18,
                       ),
                       SizedBox(width: 7),
-                      Text(rating),
+                      Text(
+                        rating,
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -102,11 +109,15 @@ class RecipeCard extends StatelessWidget {
                         size: 18,
                       ),
                       SizedBox(width: 7),
-                      Text(cookTime),
+                      Text(
+                        cookTime,
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
                     ],
                   ),
                 ),
-                // Add this IconButton
                 IconButton(
                   icon: Icon(Icons.info),
                   color: Colors.white,
