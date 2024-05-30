@@ -21,7 +21,7 @@ class FavoritesPage extends StatelessWidget {
         backgroundColor: Color(0xFF657990),
       ),
       body: Container(
-        color: Color(0xFFECF0F1),
+        color: Color(0xFF2C3E50),
         child: recipeProvider.isFavoriteLoading
             ? Center(child: CircularProgressIndicator())
             : recipeProvider.favoriteRecipes.isEmpty
@@ -50,7 +50,7 @@ class FavoritesPage extends StatelessWidget {
                   child: IconButton(
                     icon: Icon(
                       Icons.favorite,
-                      color: Color(0xFFFF6F61),
+                      color: Color(0xFFF44336),
                     ),
                     onPressed: () {
                       recipeProvider.removeFavoriteRecipe(
